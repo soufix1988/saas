@@ -6,8 +6,15 @@ const { authLimiter } = require('./middleware/rateLimit');
 
 const app = express();
 
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map(o => o.trim());
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o))) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -23,5 +30,11 @@ app.use('/api/config', require('./routes/config'));
 
 app.get('/health', (_, res) => res.json({ ok: true }));
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+// Export for Vercel serverless
+module.exports = app;
+
+// Local dev server
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+}
