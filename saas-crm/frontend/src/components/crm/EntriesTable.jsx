@@ -70,43 +70,43 @@ export default function EntriesTable() {
 
   return (
     <div className="fade-in">
-      <h1 className="text-2xl font-bold mb-6">{t.crm}</h1>
+      <h1 className="text-3xl font-bold mb-8 text-gray-900">{t.crm}</h1>
 
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-4 flex flex-wrap gap-3 items-center">
+      <div className="glass rounded-2xl p-5 mb-6 flex flex-wrap gap-4 items-center border border-white/40 hover:border-white/60 transition-all duration-500 shadow-md">
         <select value={selectedFormId} onChange={e => setSelectedFormId(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none">
+          className="px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white hover:border-gray-300">
           {forms.map(f => <option key={f.id} value={f.id}>{f.nom}</option>)}
         </select>
         <SearchBar value={search} onChange={setSearch} />
-        <span className="text-sm text-gray-400 ml-auto">{filtered.length} {t.entries}</span>
+        <span className="text-sm font-semibold text-gray-600 ml-auto bg-white/60 px-4 py-2 rounded-lg">{filtered.length} {t.entries}</span>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-400">{t.loading}</div>
+        <div className="text-center py-16 text-gray-400 text-lg">{t.loading}</div>
       ) : editingEntry ? (
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Modifier l'entrée #{editingEntry.id}</h2>
-            <button onClick={() => setEditingEntry(null)} className="text-gray-400 hover:text-gray-600">
-              <i className="fas fa-times" />
+        <div className="glass rounded-2xl shadow-lg p-8 border border-white/40">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-bold text-xl text-gray-900">Modifier l'entrée #{editingEntry.id}</h2>
+            <button onClick={() => setEditingEntry(null)} className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300">
+              <i className="fas fa-times text-lg" />
             </button>
           </div>
           <EditForm entry={editingEntry} fields={fields} onSave={handleEditSave} onCancel={() => setEditingEntry(null)} />
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
+        <div className="glass rounded-2xl shadow-md overflow-hidden border border-white/40 hover:border-white/60 transition-all duration-500">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-gray-50 text-xs text-gray-500 uppercase">
-                <th className="px-4 py-3 text-left">ID</th>
-                {fields.map(f => <th key={f.id} className="px-4 py-3 text-left">{f.label}</th>)}
-                {isAppointment && <th className="px-4 py-3 text-left">Statut</th>}
-                <th className="px-4 py-3 text-left">Score</th>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+              <tr className="border-b bg-gradient-to-r from-gray-50 to-gray-100 text-xs text-gray-600 font-bold uppercase tracking-wider">
+                <th className="px-5 py-4 text-left">ID</th>
+                {fields.map(f => <th key={f.id} className="px-5 py-4 text-left">{f.label}</th>)}
+                {isAppointment && <th className="px-5 py-4 text-left">Statut</th>}
+                <th className="px-5 py-4 text-left">Score</th>
+                <th className="px-5 py-4 text-left">Date</th>
+                <th className="px-5 py-4 text-left">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100/50">
               {filtered.map(entry => (
                 <EntryRow
                   key={entry.id}
@@ -120,7 +120,10 @@ export default function EntriesTable() {
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-sm">Aucune entrée.</div>
+            <div className="text-center py-16 text-gray-500 text-base font-medium">
+              <i className="fas fa-inbox text-4xl text-gray-300 mb-3 block opacity-50" />
+              Aucune entrée.
+            </div>
           )}
         </div>
       )}
@@ -132,16 +135,22 @@ function EditForm({ entry, fields, onSave, onCancel }) {
   const [values, setValues] = useState({ ...entry.data });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {fields.map(f => (
-        <div key={f.id}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
+        <div key={f.id} className="group">
+          <label className="block text-sm font-semibold text-gray-800 mb-2.5">{f.label}</label>
           <FieldInput field={f} value={values[f.label]} onChange={val => setValues(v => ({ ...v, [f.label]: val }))} />
         </div>
       ))}
-      <div className="flex gap-2 justify-end pt-2">
-        <button onClick={onCancel} className="px-4 py-2 rounded-lg border border-gray-200 text-sm">Annuler</button>
-        <button onClick={() => onSave(values)} className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm">Sauvegarder</button>
+      <div className="flex gap-3 justify-end pt-6 border-t border-gray-200/50">
+        <button onClick={onCancel}
+          className="px-5 py-2.5 rounded-xl border-2 border-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 hover:-translate-y-0.5">
+          Annuler
+        </button>
+        <button onClick={() => onSave(values)}
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
+          Sauvegarder
+        </button>
       </div>
     </div>
   );
