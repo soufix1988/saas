@@ -209,7 +209,8 @@ button:disabled {
 }
 
 .toast {
-  @apply glass px-6 py-4 rounded-xl shadow-2xl animate-slideInUp;
+  @apply glass px-6 py-4 rounded-xl shadow-2xl;
+  animation: slideInUp 0.6s ease-out;
 }
 
 .toast.error {
