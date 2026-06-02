@@ -74,17 +74,30 @@ export default function FormsPage() {
                   className="flex-1 px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-1">
                   <i className="fas fa-edit" /> {t.edit}
                 </button>
+                <button onClick={() => window.open(`/public?formId=${form.id}`, '_blank')}
+                  className="px-3 py-1.5 text-xs rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
+                  title="Aperçu du formulaire">
+                  <i className="fas fa-eye" />
+                </button>
+                <button onClick={() => navigate(`/crm?formId=${form.id}`)}
+                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200"
+                  title="Voir les réponses">
+                  <i className="fas fa-table" />
+                </button>
                 <button onClick={() => { navigator.clipboard.writeText(shareUrl(form.id)); addToast('Lien copié !'); }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200">
+                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200"
+                  title="Copier le lien">
                   <i className="fas fa-link" />
                 </button>
                 <button onClick={() => handleDuplicate(form.id)}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200">
+                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200"
+                  title="Dupliquer">
                   <i className="fas fa-copy" />
                 </button>
                 {user?.isAdmin && (
                   <button onClick={() => setConfirmDelete(form)}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-red-50 text-red-500 hover:bg-red-100">
+                    className="px-3 py-1.5 text-xs rounded-lg bg-red-50 text-red-500 hover:bg-red-100"
+                    title="Supprimer">
                     <i className="fas fa-trash" />
                   </button>
                 )}
