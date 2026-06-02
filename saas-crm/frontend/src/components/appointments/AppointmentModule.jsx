@@ -67,32 +67,31 @@ export default function AppointmentModule() {
 
   return (
     <div className="fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t.appointments}</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">{t.appointments}</h1>
         {selected.length > 0 && (
           <button onClick={() => { setSelected(appointments.map(a => a.id)); }}
-            className="text-sm text-gray-500 hover:text-gray-800">
+            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 px-3 py-2 rounded-lg transition-all duration-300">
             {t.selectAll}
           </button>
         )}
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-sm flex flex-wrap gap-3 items-center">
+      <div className="glass rounded-2xl p-5 mb-6 flex flex-wrap gap-4 items-center border border-white/40 hover:border-white/60 transition-all duration-500 shadow-md">
         <SearchBar value={search} onChange={setSearch} placeholder={t.search + '...'} />
         <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none" />
-        <div className="flex gap-1">
+          className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white hover:border-gray-300" />
+        <div className="flex gap-2">
           {['all', 'En attente', 'Confirmé'].map(s => (
             <button key={s} onClick={() => setFilterStatus(s)}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-colors
-                ${filterStatus === s ? 'bg-gray-900 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}>
+              className={`px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 ${filterStatus === s ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:-translate-y-0.5' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}>
               {s === 'all' ? t.all : s}
             </button>
           ))}
         </div>
         {selected.length > 0 && (
-          <button onClick={() => setSelected([])} className="text-sm text-gray-500 hover:text-gray-800 ml-auto">
+          <button onClick={() => setSelected([])} className="text-sm font-semibold text-gray-600 hover:text-gray-800 ml-auto hover:bg-gray-100 px-3 py-2 rounded-lg transition-all duration-300">
             Désélectionner tout
           </button>
         )}
@@ -100,34 +99,37 @@ export default function AppointmentModule() {
 
       {/* List */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400">{t.loading}</div>
+        <div className="text-center py-16 text-gray-400 text-lg">{t.loading}</div>
       ) : appointments.length === 0 ? (
-        <div className="text-center py-12 text-gray-400">Aucun rendez-vous trouvé.</div>
+        <div className="text-center py-16 text-gray-500 text-base font-medium">
+          <i className="fas fa-calendar-times text-4xl text-gray-300 mb-3 block opacity-50" />
+          Aucun rendez-vous trouvé.
+        </div>
       ) : (
-        <div className="space-y-2">
-          {appointments.map(apt => {
+        <div className="space-y-3">
+          {appointments.map((apt, idx) => {
             const isSelected = selected.includes(apt.id);
             const patientName = Object.values(apt.data || {})[0] || '—';
             return (
               <div key={apt.id}
-                className={`bg-white rounded-xl p-4 shadow-sm border-2 cursor-pointer transition-all
-                  ${isSelected ? 'border-gray-900' : 'border-transparent hover:border-gray-200'}`}>
-                <div className="flex items-center gap-3">
+                className={`glass rounded-xl p-5 cursor-pointer transition-all duration-300 border ${isSelected ? 'border-indigo-400 bg-indigo-50/40 shadow-lg ring-2 ring-indigo-200' : 'border-white/40 hover:border-white/80 hover:shadow-lg hover:-translate-y-1'}`}
+                style={{animationDelay: `${idx * 0.05}s`}}>
+                <div className="flex items-center gap-4">
                   <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(apt.id)}
-                    onClick={e => e.stopPropagation()} className="w-4 h-4" />
+                    onClick={e => e.stopPropagation()} className="w-5 h-5 accent-indigo-600 cursor-pointer" />
                   <div className="flex-1" onClick={() => openPanel(apt)}>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-2">
                       <div>
-                        <span className="font-medium text-gray-900">{patientName}</span>
-                        {apt.form && <span className="ml-2 text-xs text-gray-400">{apt.form.nom}</span>}
+                        <span className="font-bold text-gray-900 text-base">{patientName}</span>
+                        {apt.form && <span className="ml-3 text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">{apt.form.nom}</span>}
                       </div>
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[apt.rdv_status] || 'bg-gray-100 text-gray-600'}`}>
+                      <span className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-all duration-300 ${STATUS_COLORS[apt.rdv_status] || 'bg-gray-100 text-gray-600'}`}>
                         {apt.rdv_status}
                       </span>
                     </div>
-                    <div className="flex gap-4 mt-1 text-sm text-gray-500">
-                      <span><i className="fas fa-calendar mr-1" />{apt.rdv_date}</span>
-                      <span><i className="fas fa-clock mr-1" />{apt.rdv_time}</span>
+                    <div className="flex gap-6 text-sm text-gray-600 font-medium">
+                      <span className="flex items-center gap-2"><i className="fas fa-calendar text-indigo-500" />{apt.rdv_date}</span>
+                      <span className="flex items-center gap-2"><i className="fas fa-clock text-indigo-500" />{apt.rdv_time}</span>
                     </div>
                   </div>
                 </div>
