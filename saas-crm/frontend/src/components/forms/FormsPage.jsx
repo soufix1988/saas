@@ -172,57 +172,70 @@ export default function FormsPage() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {forms.map(form => (
-            <div key={form.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
-              style={{ borderTop: `3px solid ${form.color || '#9cf566'}` }}>
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: form.color + '20' }}>
-                      <i className={`fas ${form.icon || 'fa-leaf'}`} style={{ color: form.color }} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {forms.map((form, idx) => (
+            <div key={form.id}
+              className="group glass rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden border border-white/40 hover:border-white/80"
+              style={{ '--form-color': form.color || '#9cf566', animationDelay: `${idx * 0.05}s` }}>
+              <div className="h-1.5 bg-gradient-to-r" style={{ background: `linear-gradient(90deg, var(--form-color), var(--form-color))` }} />
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
+                      style={{ background: 'var(--form-color)' + '20' }}>
+                      <i className={`fas ${form.icon || 'fa-leaf'} text-lg`} style={{ color: 'var(--form-color)' }} />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 text-sm">{form.nom}</h3>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${form.statut === 'Actif' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900 text-base group-hover:text-indigo-600 transition-colors">{form.nom}</h3>
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full inline-block mt-1 ${form.statut === 'Actif' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                         {form.statut}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 text-gray-400 text-xs mb-4 flex-wrap">
-                  {form.adv_config?.isAppointment && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">RDV</span>}
-                  {form.adv_config?.isQuiz && <span className="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">Quiz</span>}
-                  {form.langue && <span>{form.langue.toUpperCase()}</span>}
+                <div className="flex items-center gap-2 text-gray-500 text-xs mb-5 flex-wrap">
+                  {form.adv_config?.isAppointment && <span className="bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-semibold">📅 RDV</span>}
+                  {form.adv_config?.isQuiz && <span className="bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full font-semibold">❓ Quiz</span>}
+                  {form.langue && <span className="text-gray-600 font-medium">{form.langue.toUpperCase()}</span>}
                 </div>
 
-                <div className="flex gap-1 flex-wrap">
+                <div className="grid grid-cols-3 gap-2">
                   <button onClick={() => navigate(`/forms/${form.id}/edit`)}
-                    className="flex-1 px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-1">
-                    <i className="fas fa-edit" /> {t.edit}
+                    className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-lg bg-gray-100/80 hover:bg-indigo-100 text-gray-700 hover:text-indigo-700 transition-all duration-300 text-xs font-semibold"
+                    title="Modifier">
+                    <i className="fas fa-edit text-base" />
+                    Éditer
                   </button>
                   <button onClick={() => window.open(`/public?formId=${form.id}`, '_blank')}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
+                    className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-lg bg-blue-100/60 text-blue-700 hover:bg-blue-200 transition-all duration-300 text-xs font-semibold"
                     title="Aperçu du formulaire">
-                    <i className="fas fa-eye" />
+                    <i className="fas fa-eye text-base" />
+                    Voir
                   </button>
                   <button onClick={() => navigate(`/crm?formId=${form.id}`)}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200"
+                    className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-lg bg-gray-100/80 hover:bg-gray-200 text-gray-700 transition-all duration-300 text-xs font-semibold"
                     title="Voir les réponses">
-                    <i className="fas fa-table" />
+                    <i className="fas fa-table text-base" />
+                    CRM
                   </button>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mt-2">
                   <button onClick={() => { navigator.clipboard.writeText(shareUrl(form.id)); addToast('Lien copié !'); }}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200" title="Copier le lien">
+                    className="px-2 py-2 rounded-lg bg-gray-100/60 hover:bg-gray-200 text-gray-600 transition-all duration-300 text-sm"
+                    title="Copier le lien">
                     <i className="fas fa-link" />
                   </button>
                   <button onClick={() => handleDuplicate(form.id)}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 hover:bg-gray-200" title="Dupliquer">
+                    className="px-2 py-2 rounded-lg bg-gray-100/60 hover:bg-gray-200 text-gray-600 transition-all duration-300 text-sm"
+                    title="Dupliquer">
                     <i className="fas fa-copy" />
                   </button>
                   {user?.isAdmin && (
                     <button onClick={() => setConfirmDelete(form)}
-                      className="px-3 py-1.5 text-xs rounded-lg bg-red-50 text-red-500 hover:bg-red-100" title="Supprimer">
+                      className="px-2 py-2 rounded-lg bg-red-100/60 text-red-600 hover:bg-red-200 transition-all duration-300 text-sm"
+                      title="Supprimer">
                       <i className="fas fa-trash" />
                     </button>
                   )}

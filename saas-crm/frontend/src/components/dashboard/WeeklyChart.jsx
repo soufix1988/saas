@@ -40,9 +40,11 @@ export default function WeeklyChart({ weeklyData }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      <h3 className="font-semibold text-gray-700 mb-4">{t.weeklyChart}</h3>
-      <Bar data={data} options={options} height={120} />
+    <div className="glass rounded-2xl p-6 border border-white/40 hover:border-white/80 transition-all duration-500 hover:shadow-lg">
+      <h3 className="font-bold text-gray-900 text-lg mb-6">{t.weeklyChart}</h3>
+      <div className="backdrop-blur-sm rounded-xl p-3 bg-white/20">
+        <Bar data={data} options={options} height={120} />
+      </div>
     </div>
   );
 }
