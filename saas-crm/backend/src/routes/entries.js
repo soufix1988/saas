@@ -3,6 +3,7 @@ const supabase = require('../db/supabase');
 const { requireAuth } = require('../middleware/auth');
 const { sendAppointmentEmail, extractEmailFromData } = require('../services/email');
 const { createCalendarEvent, deleteCalendarEvent, updateCalendarEvent } = require('../services/calendar');
+const { sendSlackNotification } = require('../services/slack');
 
 const router = express.Router();
 
@@ -101,6 +102,12 @@ router.post('/:formId', async (req, res) => {
         }).catch(console.error);
       }
     }
+  }
+
+  // Slack notification
+  if (appConfig?.slack_webhook_url) {
+    const { data: fields } = await supabase.from('form_fields').select('label').eq('form_id', req.params.formId).order('ordre');
+    sendSlackNotification(appConfig.slack_webhook_url, form.nom, entry, fields || []).catch(console.error);
   }
 
   res.json(entry);

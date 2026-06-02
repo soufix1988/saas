@@ -166,6 +166,17 @@ export default function AppConfig() {
             className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none" />
         </div>
 
+        {/* Slack */}
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-1 block flex items-center gap-2">
+            <i className="fab fa-slack text-purple-500" /> Slack Webhook URL
+          </label>
+          <input value={cfg.slack_webhook_url || ''} onChange={e => setCfg(c => ({ ...c, slack_webhook_url: e.target.value }))}
+            placeholder="https://hooks.slack.com/services/..."
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none font-mono" />
+          <p className="text-xs text-gray-400 mt-1">Recevez une notification Slack à chaque nouvelle réponse de formulaire.</p>
+        </div>
+
         {/* Live preview */}
         <div className="border rounded-xl p-4" style={{ background: cfg.app_bg_color || '#f7f9fc' }}>
           <p className="text-xs text-gray-500 mb-2">Aperçu</p>

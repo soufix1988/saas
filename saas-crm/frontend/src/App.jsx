@@ -12,6 +12,7 @@ import EntriesTable from './components/crm/EntriesTable';
 import AppointmentModule from './components/appointments/AppointmentModule';
 import AdminPage from './components/admin/AdminPage';
 import PublicFormPage from './components/forms/PublicFormPage';
+import LandingPage from './components/landing/LandingPage';
 
 function AppLayout() {
   const { user, appConfig, loading } = useAuth();
@@ -40,7 +41,7 @@ function AppLayout() {
     </div>
   );
 
-  if (!user) return <LoginForm />;
+  if (!user) return null;
 
   return (
     <div className="min-h-screen">
@@ -64,15 +65,35 @@ function AppLayout() {
   );
 }
 
+function RootRouter() {
+  const { user, loading } = useAuth();
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <i className="fas fa-spinner fa-spin text-gray-400 text-2xl" />
+    </div>
+  );
+  if (!user) return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/public" element={<PublicFormPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+  return (
+    <Routes>
+      <Route path="/public" element={<PublicFormPage />} />
+      <Route path="/*" element={<AppLayout />} />
+    </Routes>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
         <AuthProvider>
-          <Routes>
-            <Route path="/public" element={<PublicFormPage />} />
-            <Route path="/*" element={<AppLayout />} />
-          </Routes>
+          <RootRouter />
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
