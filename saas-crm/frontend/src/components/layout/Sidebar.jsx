@@ -11,14 +11,7 @@ const NAV_ITEMS = [
   { path: '/settings', icon: 'fa-cog', key: 'settings', adminOnly: true },
 ];
 
-const NAV_COLORS = [
-  { active: 'rgba(123,97,255,0.25)', icon: '#a78bfa' },
-  { active: 'rgba(240,147,251,0.2)', icon: '#f0abfc' },
-  { active: 'rgba(79,172,254,0.2)', icon: '#7dd3fc' },
-  { active: 'rgba(0,212,170,0.2)', icon: '#5eead4' },
-  { active: 'rgba(251,146,60,0.2)', icon: '#fdba74' },
-  { active: 'rgba(167,139,250,0.2)', icon: '#c084fc' },
-];
+const ACCENT_COLORS = ['#7c3aed', '#ec4899', '#3b82f6', '#06b6d4', '#f59e0b', '#8b5cf6'];
 
 export default function Sidebar({ open, onClose }) {
   const { user, appConfig, logout } = useAuth();
@@ -39,32 +32,20 @@ export default function Sidebar({ open, onClose }) {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 bg-black/60 z-40 md:hidden"
-          style={{ backdropFilter: 'blur(4px)' }}
-          onClick={onClose} />
+        <div className="fixed inset-0 bg-black/30 z-40 md:hidden" onClick={onClose} />
       )}
-      <aside
-        className={`sidebar flex flex-col ${open ? 'open' : ''}`}
-        style={{
-          background: 'linear-gradient(180deg, #1a1535 0%, #0f0c29 100%)',
-          borderRight: '1px solid rgba(255,255,255,0.07)'
-        }}>
-
+      <aside className={`sidebar flex flex-col ${open ? 'open' : ''}`}>
         {/* Header */}
-        <div className="flex items-center gap-3 px-6 py-5"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 hover:scale-110 hover:rotate-6"
-            style={{
-              background: 'linear-gradient(135deg, #7b61ff 0%, #e91e8c 100%)',
-              boxShadow: '0 4px 16px rgba(123,97,255,0.4)'
-            }}>
+        <div className="flex items-center gap-3 px-6 py-5" style={{ borderBottom: '1px solid #f3f4f6' }}>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)' }}>
             {appConfig?.app_logo ? (
-              <img src={appConfig.app_logo} alt="logo" className="w-9 h-9 rounded-xl object-cover" />
+              <img src={appConfig.app_logo} alt="logo" className="w-9 h-9 rounded-md object-cover" />
             ) : (
               <i className={`fas ${appConfig?.app_icon || 'fa-layer-group'} text-base text-white`} />
             )}
           </div>
-          <span className="font-bold text-lg text-white truncate">
+          <span className="font-bold text-gray-900 text-lg truncate">
             {appConfig?.app_name || 'FormSaaS'}
           </span>
         </div>
@@ -72,32 +53,33 @@ export default function Sidebar({ open, onClose }) {
         {/* Nav */}
         <nav className="flex-1 py-6 px-4 space-y-1">
           {visibleItems.map((item, idx) => {
-            const colors = NAV_COLORS[idx] || NAV_COLORS[0];
+            const accentColor = ACCENT_COLORS[idx % ACCENT_COLORS.length];
             return (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 group relative
-                  ${isActive ? 'text-white' : 'text-white/50 hover:text-white/80'}`
+                  `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 group relative
+                  ${isActive ? 'text-white' : 'text-gray-700 hover:text-gray-900'}`
                 }
                 style={({ isActive }) => ({
-                  background: isActive ? colors.active : 'transparent',
-                  border: isActive ? `1px solid ${colors.icon}30` : '1px solid transparent',
+                  background: isActive ? `${accentColor}15` : 'transparent',
+                  borderLeft: isActive ? `4px solid ${accentColor}` : 'none',
+                  paddingLeft: isActive ? '12px' : '16px',
                 })}
               >
                 {({ isActive }) => (
                   <>
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${isActive ? '' : 'group-hover:bg-white/10'}`}
-                      style={isActive ? { background: colors.active } : {}}>
-                      <i className={`fas ${item.icon} text-sm transition-colors duration-300`}
-                        style={{ color: isActive ? colors.icon : 'inherit' }} />
+                    <div className={`w-6 h-6 rounded-md flex items-center justify-center transition-all duration-300 text-sm flex-shrink-0
+                      ${isActive ? 'scale-110' : ''}`}
+                      style={{ color: isActive ? accentColor : '#9ca3af' }}>
+                      <i className={`fas ${item.icon}`} />
                     </div>
                     <span className="flex-1">{t[item.key]}</span>
                     {isActive && (
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0"
-                        style={{ background: colors.icon, boxShadow: `0 0 8px ${colors.icon}` }} />
+                      <span className="w-2 h-2 rounded-full shrink-0"
+                        style={{ background: accentColor, boxShadow: `0 0 6px ${accentColor}` }} />
                     )}
                   </>
                 )}
@@ -107,32 +89,26 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         {/* User footer */}
-        <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-          <div className="flex items-center gap-3 mb-3 p-3 rounded-2xl transition-all duration-300 hover:bg-white/5">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black shrink-0 text-white"
-              style={{
-                background: 'linear-gradient(135deg, #7b61ff 0%, #e91e8c 100%)',
-                boxShadow: '0 4px 12px rgba(123,97,255,0.4)'
-              }}>
+        <div className="p-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+          <div className="flex items-center gap-3 mb-3 p-3 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-black text-white shrink-0"
+              style={{ background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)' }}>
               {(user?.fullName || user?.identifier || 'U')[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate">
+              <p className="text-sm font-bold text-gray-900 truncate">
                 {user?.fullName || user?.identifier}
               </p>
               {user?.isAdmin && (
-                <p className="text-xs font-medium" style={{ color: '#a78bfa' }}>⭐ Admin</p>
+                <p className="text-xs text-purple-600 font-medium">⭐ Admin</p>
               )}
             </div>
           </div>
           <button
             onClick={logout}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-red-500/15 hover:-translate-y-0.5"
-            style={{ color: 'rgba(255,255,255,0.45)' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
-            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.45)'}
+            className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-300"
           >
-            <i className="fas fa-sign-out-alt" />
+            <i className="fas fa-sign-out-alt text-sm" />
             {t.logout}
           </button>
         </div>
